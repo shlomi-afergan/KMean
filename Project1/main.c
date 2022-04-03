@@ -2,13 +2,20 @@
 #include <stdio.h>
 #include "math.h"
 #include "stdlib.h"
-#include "string.h"
 
 // functions declaration
 double ** readFile(char *fileName);
-void kMean(int k, char *fileName, int max_iter);
+int kMean(int k, char *fileName, int max_iter);
 double euclideanDistance(const double* vec1, const double* vec2);
 int centroidsFar(double **old, double** new, int k);
+void copyCentroids(double **target, double **source, int k);
+double** createCentroid(double num, int k);
+void updateSumCentroid(double* vec1, double* vec2);
+void resetCentroids(double** centroids, int k);
+void updateCentroids(double **centroids, const int arr[], int k);
+void resetSizes(int* arr, int k);
+void writeFile(double **centroids, int k);
+
 
 // Global variables
 int dimensions = 1;
@@ -19,8 +26,10 @@ double ** readFile(char *fileName) {
 
     // Get Number of vectors and dimensions in the file.
     fp = fopen(fileName, "r");
-    // Check for NULL - complete later.
-    // int lineCounter = 0;
+    if(fp==NULL) {
+        printf("Invalid Input!\n");
+        // Needs to terminate the program.
+    }
     char ch;
     // int dimensions = 1;
     while((ch=fgetc(fp))!= EOF) {
@@ -29,7 +38,6 @@ double ** readFile(char *fileName) {
         if(ch=='\n')
             lineCounter++;
     }
-    printf("there are: %d vectors and %d dimensions\n", lineCounter, dimensions);
     fclose(fp);
 
     // Create list of pointers in the right size.
@@ -40,7 +48,7 @@ double ** readFile(char *fileName) {
     double *buff = calloc(size_of_buff, sizeof(double));
     int i=0;
     while(fscanf(fp, "%lf,", &buff[i++])!=EOF){
-        //printf("%0.4lf ", buff[i-1] );
+//        printf("%0.4lf ", buff[i-1] );
     }
     fclose(fp);
 
@@ -138,7 +146,10 @@ void resetSizes(int* arr, int k) {
 
 void writeFile(double **centroids, int k) {
     FILE *fp = NULL;
-    fp = fopen("myCFile.txt", "w+");
+    fp = fopen("myCFile.txt", "w");
+    if (fp == NULL) {
+        printf("An Error Has Occurred!");
+    }
     int i,j;
     for(i=0;i<k;i++) {
         for(j=0;j<dimensions-1;j++) {
@@ -150,7 +161,7 @@ void writeFile(double **centroids, int k) {
     // Need to add EOF for the File.
 }
 
-void kMean(int k, char *fileName, int max_iter) {
+int kMean(int k, char *fileName, int max_iter) {
     // convert data in File to matrix of points.
     double **inputData = readFile(fileName);
 
@@ -176,6 +187,7 @@ void kMean(int k, char *fileName, int max_iter) {
         resetCentroids(new_centroids,k);
         int cluster_idx;
         resetSizes(sizes,k);
+
         for(i=0; i<lineCounter;i++) {
             double min_euc = INFINITY;
             cluster_idx = k+1;
@@ -194,15 +206,14 @@ void kMean(int k, char *fileName, int max_iter) {
         counter++;
     }
     writeFile(centroids, k);
-
-    printf("counter is: %d\n", counter);
-
-    for(i=0;i<k;i++) {
-        for(j=0; j<dimensions;j++) {
-            printf("%0.4lf,", centroids[i][j]);
-        }
-        printf("\n");
-    }
+    return 0;
+    // printf("counter is: %d\n", counter);
+//    for(i=0;i<k;i++) {
+//        for(j=0; j<dimensions;j++) {
+//            printf("%0.4lf,", centroids[i][j]);
+//        }
+//        printf("\n");
+//    }
 
 }
 
