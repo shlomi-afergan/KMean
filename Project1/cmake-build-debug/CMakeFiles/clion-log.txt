@@ -1,4 +1,1 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/ninja -G Ninja "/Users/shlomiafergan/Desktop/Shlomi/Programming/C/Software Project/Project1"
--- Configuring done
--- Generating done
--- Build files have been written to: /Users/shlomiafergan/Desktop/Shlomi/Programming/C/Software Project/Project1/cmake-build-debug
+CMakeLists.txt not found in /Users/shlomiafergan/Desktop/Shlomi/Programming/C/Software Project/KMean/Project1/cmake-build-debug Select CMakeLists.txt

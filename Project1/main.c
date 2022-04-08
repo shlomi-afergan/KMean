@@ -1,22 +1,22 @@
-// Preprocessor statements
+/*Preprocessor statements*/
 #include <stdio.h>
 #include "math.h"
 #include "stdlib.h"
 
-// functions declaration
-double ** readFile(char *fileName);
+/* functions declaration*/
+double ** readFile(int k, char *fileName);
 int kMean(int k, int max_iter,char *fileName, char *outputName);
 double euclideanDistance(const double* vec1, const double* vec2);
 int centroidsFar(double **old, double** new, int k);
 void copyCentroids(double **target, double **source, int k);
-double** createCentroid(double num, int k);
+double** createCentroid(int k);
 void updateSumCentroid(double* vec1, const double* vec2);
 void resetCentroids(double** centroids, int k);
 void updateCentroids(double **centroids, const int arr[], int k);
 void resetSizes(int* arr, int k);
 void writeFile(double **centroids, int k, char* outputName);
 
-// Global variables
+/* Global variables*/
 int dimensions = 1;
 int lineCounter = 0;
 
@@ -24,16 +24,18 @@ int lineCounter = 0;
 /** The function reads all the vectors from the input file.
  *  Counts the number of lines of text as the number of vectors.
  *  Counts the number of values in each vector as the number of dimension **/
-double ** readFile(char *fileName) {
+double ** readFile(int k, char *fileName) {
     FILE *fp = NULL;
+    char ch;
+    double **inputData, *buff;
+    int size_of_buff, i=0, buff_idx=0, vec_idx, line_idx;
 
-    // Get Number of vectors and dimensions in the file.
+    /* Get Number of vectors and dimensions in the file.*/
     fp = fopen(fileName, "r");
     if(!fp) {
         printf("Invalid Input!\n");
         exit(1);
     }
-    char ch;
     while((ch=fgetc(fp))!= EOF) {
         if (lineCounter == 0 && ch == ',')
             dimensions++;
@@ -42,31 +44,24 @@ double ** readFile(char *fileName) {
     }
     fclose(fp);
 
-
-    // Create list of pointers in the right size.
+    /* Create list of pointers in the right size.*/
     fp = fopen(fileName, "r");
-    double **inputData = (double **)calloc(lineCounter, sizeof(double *));
+    inputData = (double **)calloc(lineCounter, sizeof(double *));
     if(!inputData) {
         printf("An Error Has Occurred\n");
         exit(1);
     }
-
-    // double *vector = (double *)calloc(dimensions, sizeof(double));
-    int size_of_buff = dimensions*lineCounter;
-    double *buff = calloc(size_of_buff, sizeof(double));
+    size_of_buff = dimensions*lineCounter;
+    buff = calloc(size_of_buff, sizeof(double));
     if(!buff) {
         printf("An Error Has Occurred\n");
         exit(1);
     }
-    int i=0;
     while(fscanf(fp, "%lf,", &buff[i++])!=EOF){
-//        printf("%0.4lf ", buff[i-1] );
     }
     fclose(fp);
 
-    // copy buff to my inputData matrix.
-    int buff_idx=0;
-    int vec_idx, line_idx;
+    /* copy buff to my inputData matrix. */
     for(line_idx=0; line_idx<lineCounter; line_idx++) {
         double *vector = (double *)calloc(dimensions, sizeof(double));
         if(!vector) {
@@ -80,19 +75,23 @@ double ** readFile(char *fileName) {
     }
 
     free(buff);
-
+    if (k > lineCounter){             /* The num of vectors should be >= k */
+        printf("Invalid Input!\n");
+        exit(1);
+    }
     return inputData;
 }
+
 
 /** Calculates the Euclidean distance between two vectors **/
 double euclideanDistance(const double* vec1, const double* vec2) {
     int i;
-    double sum = 0;
+    double sum = 0, distance;
     for(i=0;i<dimensions;i++) {
         double tmp = vec1[i] - vec2[i];
         sum += pow(tmp,2);
     }
-    double distance = sqrt(sum);
+    distance = sqrt(sum);
     return distance;
 }
 
@@ -101,7 +100,7 @@ double euclideanDistance(const double* vec1, const double* vec2) {
 int centroidsFar(double **old, double** new, int k) {
     int i;
     for(i=0; i<k; i++) {
-        if(euclideanDistance(*old, *new) > 0.01) {
+        if(euclideanDistance(*old, *new) > 0.001) {
             return 1;
         }
         old += 1;
@@ -123,7 +122,7 @@ void copyCentroids(double **target, double **source, int k) {
 
 /** Creates the list of clusters for the first time.
  *  The centroids will be the first k vectors  **/
-double** createCentroid(double num, int k) {
+double** createCentroid(int k) {
     int i, j;
     double inf = INFINITY;
     double **new_centroids = (double **) calloc(k, sizeof(double *));
@@ -188,11 +187,11 @@ void resetSizes(int* arr, int k) {
  *  each contains the relevant vectors. **/
 void writeFile(double **centroids, int k, char* outputName) {
     FILE *fp = NULL;
+    int i,j;
     fp = fopen(outputName, "w");
     if (fp == NULL) {
         printf("An Error Has Occurred!");
     }
-    int i,j;
     for(i=0;i<k;i++) {
         for(j=0;j<dimensions-1;j++) {
             fprintf(fp, "%0.4lf,", centroids[i][j]);
@@ -200,7 +199,6 @@ void writeFile(double **centroids, int k, char* outputName) {
         fprintf(fp,"%0.4lf\n",centroids[i][j]);
     }
     fclose(fp);
-    // Need to add EOF for the File.
 }
 
 /** The main function
@@ -208,16 +206,19 @@ void writeFile(double **centroids, int k, char* outputName) {
  * vectors into K groups so that each vector belongs
  * to the cluster with its nearest centroid. **/
 int kMean(int k, int max_iter,char *fileName, char *outputName) {
-    // convert data in File to matrix of points.
-    double **inputData = readFile(fileName);
+    /* convert data in File to matrix of points.*/
+    double **inputData, **centroids, **new_centroids;
+    int i, j, counter=0, *sizes;
 
-    // Initialize clusters centers.
-    double **centroids = (double **)calloc(k, sizeof(double *));
+    inputData = readFile(k, fileName);
+
+    /* Initialize clusters centers.*/
+    centroids = (double **)calloc(k, sizeof(double *));
     if(!centroids) {
         printf("An Error Has Occurred\n");
         exit(1);
     }
-    int i, j;
+
     for(i=0; i < k; i++) {
         double *centroid = (double*) calloc(dimensions,sizeof(double));
         if(!centroid) {
@@ -229,21 +230,19 @@ int kMean(int k, int max_iter,char *fileName, char *outputName) {
         }
         centroids[i] = centroid;
     }
-    int counter=0;
-    double inf = INFINITY;
-    double **new_centroids = createCentroid(inf, k);
-    int *sizes = (int *) calloc(k, sizeof(int));
+    new_centroids = createCentroid(k);
+    sizes = (int *) calloc(k, sizeof(int));
     if(!sizes) {
         printf("An Error Has Occurred\n");
         exit(1);
     }
 
     while(counter<max_iter && centroidsFar(centroids, new_centroids, k)) {
+        int cluster_idx;
         if(counter != 0) {
             copyCentroids(centroids, new_centroids, k);
         }
         resetCentroids(new_centroids,k);
-        int cluster_idx;
         resetSizes(sizes,k);
 
         for(i=0; i<lineCounter;i++) {
@@ -272,16 +271,21 @@ int main(int argc, char* argv[]) {
     int k, max_iter = 200;
     char *fileName, *outputName;
 
-    if (argc == 5){                  // received max_iter:
+    if (argc == 5){                   /*received max_iter:*/
         k = atoi(argv[1]);
         max_iter = atoi(argv[2]);
         fileName = argv[3];
         outputName = argv[4];
     }
-    else {                           // max_iter = default
+    else {                            /*max_iter = default*/
         k = atoi(argv[1]);
         fileName = argv[2];
         outputName = argv[3];
+    }
+
+    if (k <= 0) {
+        printf("Invalid Input!\n");
+        exit(1);
     }
     kMean(k, max_iter, fileName, outputName);
 }
