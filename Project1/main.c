@@ -262,7 +262,10 @@ int kMean(int k, int max_iter,char *fileName, char *outputName) {
         updateCentroids(new_centroids, sizes, k);
         counter++;
     }
+    free(inputData);
+    free(new_centroids);
     writeFile(centroids, k, outputName);
+    free(centroids);
     return 0;
 }
 
