@@ -1,3 +1,5 @@
+# KMeans Algorithm in C and Python:
+
 ### This is my implementation of the KMeans algorithm, completed during my Computer Science degree at Tel Aviv University.
 
 ![](https://serokell.io/files/q4/q49pm3tx.K-Means_Clustering_Algorithm_pic1_(1).png)
