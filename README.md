@@ -14,7 +14,7 @@
 * $python setup.py build_ext --inplace (try python3)
 2. run:
 * $bash comp.sh
-3. After successful compilation the program can run for example:
+3. After successful compilation, the program can be executed, for example:
 * >>>./spkmeans lnorm input_for_example.txt
 
 ** Input and Output of the program: ** 
