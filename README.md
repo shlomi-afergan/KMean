@@ -19,12 +19,12 @@
 
 ### Input and Output of the program: 
 1. Reading user CMD arguments:
-    - (a) goal (enum): Can get the following values:
-        *   i. wam: Calculate and output the Weighted Adjacency Matrix.
-        *   ii. ddg: Calculate and output the Diagonal Degree Matrix.
-        *   iii. lnorm: Calculate and output the Normalized Graph Laplacian
-        *   iv. jacobi: Calculate and output the eigenvalues and eigenvectors.
-    - (b) file name (.txt or .csv): The path to the Input file, it will contain N data points for all above goals except Jacobi, in case the goal is Jacobi the input is a symmetric matrix, the file extension is .txt or .csv.
+    - (a) **goal** (enum): Can get the following values:
+        *   i. **wam:** Calculate and output the Weighted Adjacency Matrix.
+        *   ii. **ddg:** Calculate and output the Diagonal Degree Matrix.
+        *   iii. **lnorm:** Calculate and output the Normalized Graph Laplacian
+        *   iv. **jacobi:** Calculate and output the eigenvalues and eigenvectors.
+    - (b) **file name** (.txt or .csv): The path to the Input file, it will contain N data points for all above goals except Jacobi, in case the goal is Jacobi the input is a symmetric matrix, the file extension is .txt or .csv.
 
 2. Outputting the following:
     * Case of ’Jacobi’: The first line will be the eigenvalues, second line onward will be the corresponding eigenvectors (printed as columns).
