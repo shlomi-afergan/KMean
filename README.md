@@ -1,5 +1,7 @@
 ## This is my implementation of the KMeans algorithm, completed during my Computer Science degree at Tel Aviv University.
 
+![https://serokell.io/files/q4/q49pm3tx.K-Means_Clustering_Algorithm_pic1_(1).png]
+
 ### This repo includes the following files:
 1. spkmeans.py: Python interface of my code.
 2. spkmeans.h: C header file.
