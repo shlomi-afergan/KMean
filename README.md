@@ -15,9 +15,9 @@
 
 
 ### How to run this code:
-1. first run this command: 
+1. First run this command: 
 * $python setup.py build_ext --inplace (try python3)
-2. run:
+2. Run:
 * $bash comp.sh
 3. After successful compilation, the program can be executed, for example:
 * ./spkmeans lnorm input_for_example.txt
