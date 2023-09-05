@@ -19,6 +19,7 @@
 
 ** Input and Output of the program: ** 
 1. Reading user CMD arguments:
+
 (a) goal (enum): Can get the following values:
         i. wam: Calculate and output the Weighted Adjacency Matrix.
         ii. ddg: Calculate and output the Diagonal Degree Matrix.
@@ -29,3 +30,4 @@
 2. Outputting the following:
 • Case of ’Jacobi’: The first line will be the eigenvalues, second line onward will be the corresponding eigenvectors (printed as columns).
 • Else: output the required matrix separated by a comma, such that each row is in a line of its own.
+
