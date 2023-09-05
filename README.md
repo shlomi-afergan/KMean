@@ -32,5 +32,5 @@
 • Else: output the required matrix separated by a comma, such that each row is in a line of its own.
 
 (a) goal (enum): Can get the following values:
-    i. wam: Calculate
-    ii. ddg:
+* i. wam: Calculate
+* ii. ddg:
